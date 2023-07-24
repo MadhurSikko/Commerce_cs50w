@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    {% for list in lists %}
+        <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">{{ list.iteamName }}</div>
+            <div class="card-body">
+            <p class="card-text">{{ list.iteamDescription }}</p>
+            <p class="card-text">The minimum bid is: ₹{{ list.minimumBid }}</p>
+            <p class="card-text">By: {{ list.user.username }}</p>
+            <a href="{% url 'listingPage' list.iteamName %}" class="btn btn-primary">Check out</a>
+            </div>
+        </div>
+    {% empty %}
+        <h4>There are not active listings currently</h4>
+    {% endfor %}
+{% endblock %}
