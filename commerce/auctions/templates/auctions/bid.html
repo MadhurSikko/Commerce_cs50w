@@ -1,0 +1,43 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Bidding for {{ title }}</h2><br>
+    <h4>Details: </h4>
+    Title: {{ list.title }}<br>
+    Description: {{ list.description }}<br>
+    Starting Bid: {{ list.starting_bid }}<br>
+    Category: {{ list.category }}<br>
+    <img src="{{ list.image }}" alt="{{ list.title }}"><br>
+    ------------------------------------------------------------------------------------------
+    {% if user.is_authenticated and user.username != list.user.username and list.status == True %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Current Bid: </label><br>
+                <p>By: {{ maxBidder }}</p>
+                <input class="form-control" disabled type="number" name="current_bid" placeholder="Current Bid" value="{{ list.highest_bid }}"><br>
+                <label>New Bid: </label>
+                <input class="form-control" type="number" name="highest_bid" placeholder="Your Bid" ><br>
+                <input type="submit" class="btn btn-primary" value="Make Bid"><br>
+                {% if message is True %}
+                    The bid cannot be less than the highest bid
+                {% endif %}
+            </div>
+        </form>
+    {% elif user.is_authenticated and user.username == list.user.username %}
+        <form method="post" action="#">
+            {% csrf_token %}
+            <label>Current Bid</label>:
+            {{ list.highest_bid }}
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" name="close_listing" value="Close Listing">
+            </div>
+        </form>
+    {% else %}
+        <p>Bid Over</p>
+        <p>Winner: {{ maxBidder }}</p>
+        <p>For: {{ list.highest_bid }}</p>
+    {% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    {% for list in lists %}
+    <div class="card" style="width: 24rem;">
+        <img src="{{ list.image }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ list.title }}</h5>
+          <p class="card-text">{{ list.description }}</p>
+          <p class="card-text">Current Bid: {{ list.highest_bid }}</p>
+          <p class="card-text">By: {{ list.user.username }}</p>
+          <a href="{% url 'bid' list.title %}" class="btn btn-primary">Bid</a>
+        </div>
+      </div><br>
+    {% empty %}
+        <h3>There are no active listings right now :/</h3>
+    {% endfor %}
+{% endblock %}

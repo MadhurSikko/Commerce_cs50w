@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Create New Listing</h2>
+
+    <form method="post" action="{% url 'createListing' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <input class="form-control" autofocus type="text" name="title" placeholder="Iteam Name">
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" autofocus name="description" placeholder="Enter the Description of the iteam"></textarea>
+        </div>
+        <div class="form-group">
+            <input class="form-control" autofocus type="number" name="starting_bid" placeholder="Starting Bid">
+        </div>
+        <label>Should the iteam be in active listing</label>
+        <input name="status" type="checkbox" ><br>
+        <div class="form-group">
+            <input class="form-control" autofocus type="text" name="image" placeholder="Enter the url of the image of the iteam">
+        </div>
+        <div class="form-group">
+            <input class="form-control" autofocus type="text" name="category" placeholder="Category">
+        </div>
+        <input type="submit" class="btn btn-primary" value="Create Listing">
+
+    </form>
+{% endblock %}
