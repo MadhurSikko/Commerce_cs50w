@@ -25,7 +25,7 @@
             </div>
         </form>
     {% elif user.is_authenticated and user.username == list.user.username %}
-        <form method="post" action="#">
+        <form method="post">
             {% csrf_token %}
             <label>Current Bid</label>:
             {{ list.highest_bid }}
@@ -33,11 +33,34 @@
                 <input type="submit" class="btn btn-primary" name="close_listing" value="Close Listing">
             </div>
         </form>
-    {% else %}
+    {% elif list.status == False %}
         <p>Bid Over</p>
         <p>Winner: {{ maxBidder }}</p>
         <p>For: {{ list.highest_bid }}</p>
+    {% else %}
+        <p>Log in or register to bid</p>
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+    ------------------------------------------------------------------------------------------
+    <h5>Make Comments</h5>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input class="form-control" type="text" name="comment" placeholder="Comment"><br>
+                <input type="submit" class="btn btn-primary" value="Comment">
+            </div>
+        </form>
     {% endif %}
 
+    {% if userComment == None %}
+        <p>No Comments</p>
+    {% else %}
+        {% for comment in userComment %}
+            <p>@{{ comment.user.username }}</p>
+            <p>{{ comment.description }}</p>
+        ------------------------------------------------------------------------------------------
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}

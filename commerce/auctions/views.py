@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import User, Listing, Bids
+from .models import User, Listing, Bids, Comment
 from django.db.models import Min, Max
 
 
@@ -16,6 +16,10 @@ def index(request):
 def bid(request, title):
     lst = Listing.objects.get(title=title)
     maxBid = Bids.objects.filter(listing=lst).aggregate(Max("value"))
+    if Comment.objects.filter(listing=lst).exists():    
+        userComments = Comment.objects.filter(listing=lst)
+    else:
+        userComments = None
     try:
         maxBidder = Bids.objects.get(value=int(maxBid['value__max']))
     except:
@@ -23,7 +27,6 @@ def bid(request, title):
 
     if request.method == "POST":
         if "highest_bid" in request.POST:
-
             highest_bid = request.POST.get("highest_bid")
 
             if int(highest_bid) <= lst.highest_bid:
@@ -31,7 +34,8 @@ def bid(request, title):
                     "title": title, 
                     "list": lst,
                     "message": True,
-                    "maxBidder": str(maxBidder)
+                    "maxBidder": maxBidder,
+                    "userComment": userComments,
                 })
             else:
                 lst.highest_bid = int(highest_bid)
@@ -47,12 +51,20 @@ def bid(request, title):
             lst.status = False
             lst.save()
             return HttpResponseRedirect(reverse("index"))
+        elif "comment" in request.POST:
+            comment = request.POST.get("comment")
+            co = Comment(user=User.objects.get(pk=request.user.id), listing=lst, description=comment)
+            co.save()
+            return HttpResponseRedirect(reverse('bid', args=[title]))
+        else:
+            pass
 
 
     return render(request, "auctions/bid.html", {
         "title": title,
         "list": lst,
-        "maxBidder": str(maxBidder)
+        "maxBidder": maxBidder,
+        "userComment": userComments,
     })
 
 def createListing(request):

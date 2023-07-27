@@ -35,6 +35,6 @@ class Comment(models.Model):
     description = models.TextField(default="")
 
     def __str__(self):
-        return f"{self.user}"
+        return f"{self.user}: {self.listing}"
     
     
