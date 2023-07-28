@@ -1,0 +1,13 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+
+    {% if watchlist is None %}
+        There is nothing in your watchlist
+    {% else %}
+        {% for watch in watchlist %}
+            {{ watch.title }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

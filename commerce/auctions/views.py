@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from .models import User, Listing, Bids, Comment
 from django.db.models import Min, Max
-
+from django.contrib.auth.decorators import login_required
 
 def index(request):
 
@@ -65,6 +65,17 @@ def bid(request, title):
         "list": lst,
         "maxBidder": maxBidder,
         "userComment": userComments,
+    })
+
+@login_required
+def watchlist(request):
+    if Listing.objects.filter(watchlist=User.objects.get(pk=request.user.id)).exists():
+        watchlist = Listing.objects.filter(watchlist=User.objects.get(pk=request.user.id))
+    else:
+        watchlist = None
+
+    return render(request, "auctions/watchlist.html", {
+        "watchlist": watchlist,
     })
 
 def createListing(request):
